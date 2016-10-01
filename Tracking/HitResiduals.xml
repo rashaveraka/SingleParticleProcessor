@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!--
+   ##########################################
+   #                                        #
+   #       Steering file for Marlin         #
+   #                                        #
+   ##########################################
+-->
+
+
+<marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
+  <execute>
+    <!-- ========== setup  ========== -->
+    <processor name="MyAIDAProcessor"/>
+    <processor name="InitDD4hep"/>
+
+    <!-- ====== analysis code  ====== -->
+    <processor name="HitResiduals"/>
+
+  </execute>
+
+
+  <global>
+    <parameter name="LCIOInputFiles">
+      /afs/phas.gla.ac.uk/user/p/protopop/public_ppe/lcgeo/sitracks.slcio
+    </parameter>
+
+    <parameter name="GearXMLFile" value="gear_sid.xml"/>
+    <!-- Limit the number of processed records (run+evt): -->
+    <parameter name="MaxRecordNumber" value="1000" />
+    <parameter name="SkipNEvents" value="0" />
+    <parameter name="SupressCheck" value="false" />  
+    <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> WARNING0 </parameter>
+    <parameter name="RandomSeed" value="1234567890" />
+  </global>
+
+
+  <processor name="InitDD4hep" type="InitializeDD4hep">
+    <parameter name="DD4hepXMLFile" type="string">
+      /afs/phas.gla.ac.uk/user/p/protopop/public_ppe/lcgeo/SiD/compact/SiD_o1_v01/SiD_o1_v03.xml  
+    </parameter>
+  </processor>
+
+  <!--minimal Gear XML file that can be used to read simjob.slcio with Marlin (for testing) ...-->
+  <gear>
+    <global detectorName="SiD_o1_v03" />
+    <BField type="ConstantBField" x="0.000000000e+00" y="0.000000000e+00" z="5.500000000e+00" />
+    <detectors>
+    </detectors>
+  </gear>
+
+  <processor name="HitResiduals" type="HitResiduals">
+    <parameter name="Verbosity" type="string">SILENT</parameter>
+  </processor>
+  
+  <processor name="MyAIDAProcessor" type="AIDAProcessor">
+    <parameter name="Compress" type="int" value="1"/>
+    <!-- filename without extension-->
+    <parameter name="FileName" type="string" value="hitresiduals"/>
+    <!-- type of output file xml (default) or root (only OpenScientist) -->
+    <parameter name="FileType" type="string" value="root "/>
+  </processor>
+
+   <processor name="MyStatusmonitor" type="Statusmonitor">
+    <parameter name="howOften" type="int">100</parameter>
+    <parameter name="Verbosity" type="string">MESSAGE </parameter>
+  </processor>
+    
+</marlin>
